@@ -212,6 +212,66 @@ section { position: relative; }
 .step__body p { color: rgba(255,255,255,0.82); font-size: 1.06rem; }
 .step__grid { display: grid; grid-template-columns: auto 1fr; gap: 36px; align-items: center; }
 
+/* ---------- Process: self-erecting pole barn ---------- */
+.process { position: relative; background: var(--navy-deep); }
+.process__sticky { position: sticky; top: 0; height: 100svh; min-height: 600px; overflow: hidden; display: flex; align-items: flex-end; padding-bottom: 6vh; }
+.process__spacer { height: 300vh; }
+.process__sticky::before {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(180deg, rgba(8,22,37,0.22) 0%, rgba(8,22,37,0) 30%, rgba(8,22,37,0.35) 58%, rgba(8,22,37,0.92) 100%);
+}
+.barn { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+.process__overlay { position: relative; z-index: 2; width: 100%; pointer-events: none; }
+.process__overlay .eyebrow { margin-bottom: 18px; }
+.pstep-stack { position: relative; min-height: 300px; }
+.pstep { position: absolute; inset: 0; max-width: 560px; opacity: 0; transform: translateY(20px); transition: opacity .4s var(--ease), transform .4s var(--ease); }
+.pstep.active { opacity: 1; transform: none; }
+.pstep__num { font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; letter-spacing: 0.22em; color: var(--amber-light); }
+.pstep h2 { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; font-size: clamp(2rem, 5vw, 3.6rem); letter-spacing: -0.02em; line-height: 1.02; margin: 12px 0 16px; }
+.pstep p { color: rgba(255,255,255,0.86); font-size: 1.08rem; max-width: 46ch; }
+.process__dots { list-style: none; display: flex; gap: 12px; margin-top: 34px; }
+.process__dots li { width: 40px; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.16); transition: background .4s var(--ease); }
+.process__dots li.on { background: var(--amber); }
+.process__progress { position: absolute; left: 0; bottom: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.08); z-index: 3; }
+.process__progress > i { display: block; height: 100%; width: 100%; transform: scaleX(0); transform-origin: 0 50%; background: linear-gradient(90deg, var(--blue), var(--amber)); }
+
+/* SVG part styling */
+.barn .draw { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.barn #grid line { stroke: rgba(184,208,236,0.10); stroke-width: 1; }
+.barn #blueprint path { stroke: var(--amber); stroke-width: 1.6; stroke-dasharray: 6 7; opacity: 0.55; }
+.barn #dims .draw { stroke: rgba(184,208,236,0.7); stroke-width: 1.4; }
+.barn #dims text { fill: var(--sky); font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: 0.14em; }
+.barn #posts rect { fill: rgba(184,208,236,0.92); }
+.barn #truss .draw, .barn #trussFar .draw { stroke: var(--amber-light); stroke-width: 3; }
+.barn #trussFar { opacity: 0.4; }
+.barn #frame .draw { stroke: var(--sky); stroke-width: 2; }
+.barn #roof polygon { stroke: rgba(255,255,255,0.5); stroke-width: 1.5; }
+.barn #finish .draw { stroke: #ffffff; stroke-width: 4; }
+.barn #ground .pad { fill: rgba(184,208,236,0.06); stroke: rgba(184,208,236,0.18); stroke-width: 1; }
+.barn #ground .gline { stroke: rgba(184,208,236,0.35); stroke-width: 1.5; }
+.barn #ground .shadow { fill: rgba(0,0,0,0.28); }
+
+/* Prevent first-paint flash before JS arms the build timeline */
+.has-js .process:not(.process--static) #dims,
+.has-js .process:not(.process--static) #blueprint,
+.has-js .process:not(.process--static) #posts,
+.has-js .process:not(.process--static) #truss,
+.has-js .process:not(.process--static) #trussFar,
+.has-js .process:not(.process--static) #frame,
+.has-js .process:not(.process--static) #roof,
+.has-js .process:not(.process--static) #finish,
+.has-js .process:not(.process--static) #ground .pad,
+.has-js .process:not(.process--static) #ground .gline { opacity: 0; }
+
+/* Static fallback (no GSAP / reduced motion): show the finished barn + stacked steps */
+.process--static .process__sticky { position: relative; height: auto; display: block; padding: 12vh 0; }
+.process--static .process__sticky::before { display: none; }
+.process--static .process__spacer { display: none; }
+.process--static .barn { position: relative; height: 50vh; margin-bottom: 28px; }
+.process--static .pstep-stack { min-height: 0; }
+.process--static .pstep { position: relative; inset: auto; opacity: 1; transform: none; max-width: none; margin-bottom: 24px; }
+.process--static .process__progress { display: none; }
+
 /* ---------- What we build ---------- */
 .build { background: var(--offwhite); color: var(--ink); padding: 14vh 0; }
 .build .eyebrow { color: var(--amber-dark); }
@@ -305,6 +365,15 @@ section { position: relative; }
   .gallery__intro { flex-basis: 78vw; }
   .shot { flex-basis: 76vw; height: 56vh; }
   .cta__contacts { gap: 18px; flex-direction: column; }
+}
+
+/* Process section on small screens */
+@media (max-width: 720px) {
+  .process__sticky::before { background: linear-gradient(180deg, rgba(8,22,37,0.30) 0%, rgba(8,22,37,0.86) 70%); }
+  .process__overlay { align-self: flex-end; }
+  .process__sticky { align-items: flex-end; padding-bottom: 8vh; }
+  .pstep h2 { font-size: clamp(1.7rem, 8vw, 2.4rem); }
+  .pstep-stack { min-height: 210px; }
 }
 
 /* ---------- Reduced motion ---------- */

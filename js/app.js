@@ -29,6 +29,7 @@
   var lenis = null;
   if (hasLenis && !reduceMotion) {
     lenis = new Lenis({ duration: 1.15, smoothWheel: true, lerp: 0.1 });
+    window.__lenis = lenis;
     lenis.on("scroll", function (e) {
       onScrollBasics(e.scroll || window.scrollY);
       if (hasST) ScrollTrigger.update();
@@ -72,8 +73,16 @@
   }
 
   /* ---- The rest needs GSAP + ScrollTrigger ---- */
-  if (!hasST || reduceMotion) { return; }
+  if (!hasST || reduceMotion) {
+    var pStatic = document.getElementById("process");
+    if (pStatic) pStatic.classList.add("process--static");
+    return;
+  }
   gsap.registerPlugin(ScrollTrigger);
+
+  /* Process section runs the cinematic build; drop the static fallback class */
+  var processEl = document.getElementById("process");
+  if (processEl) processEl.classList.remove("process--static");
 
   /* Hero media parallax */
   var heroMedia = document.getElementById("heroMedia");
@@ -99,15 +108,58 @@
     });
   }
 
-  /* Process step backgrounds — parallax drift */
-  gsap.utils.toArray(".step").forEach(function (step) {
-    var bg = step.querySelector(".step__bg");
-    if (!bg) return;
-    gsap.fromTo(bg, { yPercent: -10 }, {
-      yPercent: 10, ease: "none",
-      scrollTrigger: { trigger: step, start: "top bottom", end: "bottom top", scrub: true }
+  /* Process — self-erecting pole barn driven by scroll */
+  (function () {
+    var section = document.getElementById("process");
+    if (!section) return;
+    var steps = gsap.utils.toArray("#process .pstep");
+    var dots  = gsap.utils.toArray("#process .process__dots li");
+    var bar   = section.querySelector(".process__progress > i");
+
+    function setActive(i) {
+      steps.forEach(function (s, idx) { s.classList.toggle("active", idx === i); });
+      dots.forEach(function (d, idx) { d.classList.toggle("on", idx <= i); });
+    }
+    setActive(0);
+
+    // Initial hidden states (armed only when GSAP is live; static fallback shows the finished barn)
+    gsap.set("#ground .pad, #ground .gline", { opacity: 0 });
+    gsap.set("#dims .draw", { strokeDashoffset: 1 });
+    gsap.set("#dims text", { opacity: 0 });
+    gsap.set("#blueprint", { opacity: 0 });
+    gsap.set("#blueprint path", { strokeDashoffset: 1 });
+    gsap.set("#posts rect", { scaleY: 0, transformOrigin: "50% 100%" });
+    gsap.set("#truss .draw, #trussFar .draw, #frame .draw", { strokeDashoffset: 1 });
+    gsap.set("#roof polygon", { opacity: 0, y: -26, transformOrigin: "50% 0%" });
+    gsap.set("#finish", { opacity: 0 });
+
+    var tl = gsap.timeline({
+      defaults: { ease: "none" },
+      scrollTrigger: {
+        trigger: section, start: "top top", end: "bottom bottom", scrub: 0.6,
+        onUpdate: function (self) {
+          setActive(Math.min(3, Math.floor(self.progress * 4)));
+          if (bar) bar.style.transform = "scaleX(" + self.progress + ")";
+        }
+      }
     });
-  });
+
+    tl.to("#ground .pad",    { opacity: 1, duration: 0.05 }, 0.02)   // 01 Design
+      .to("#ground .gline",  { opacity: 1, duration: 0.04 }, 0.05)
+      .to("#dims .draw",     { strokeDashoffset: 0, duration: 0.10 }, 0.07)
+      .to("#dims text",      { opacity: 1, duration: 0.06 }, 0.14)
+      .to("#blueprint",      { opacity: 1, duration: 0.04 }, 0.22)   // 02 Engineer
+      .to("#blueprint path", { strokeDashoffset: 0, duration: 0.18 }, 0.22)
+      .to("#dims",           { opacity: 0, duration: 0.06 }, 0.44)
+      .to("#posts rect",     { scaleY: 1, duration: 0.10, stagger: 0.015 }, 0.46) // 03 Fabricate
+      .to("#truss .draw",    { strokeDashoffset: 0, duration: 0.10, stagger: 0.01 }, 0.54)
+      .to("#trussFar .draw", { strokeDashoffset: 0, duration: 0.08 }, 0.56)
+      .to("#frame .draw",    { strokeDashoffset: 0, duration: 0.08 }, 0.63)
+      .to("#blueprint",      { opacity: 0, duration: 0.08 }, 0.66)
+      .to("#roof polygon",   { opacity: 1, y: 0, duration: 0.12, stagger: 0.04 }, 0.72) // 04 Install
+      .to("#grid",           { opacity: 0, duration: 0.10 }, 0.78)
+      .to("#finish",         { opacity: 1, duration: 0.10 }, 0.88);
+  })();
 
   /* Horizontal gallery — pin and scroll the track sideways */
   var track = document.getElementById("galleryTrack");
