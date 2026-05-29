@@ -224,7 +224,8 @@ section { position: relative; }
 .process__overlay { position: relative; z-index: 2; width: 100%; pointer-events: none; }
 .process__overlay .eyebrow { margin-bottom: 18px; }
 .pstep-stack { position: relative; min-height: 300px; }
-.pstep { position: absolute; inset: 0; max-width: 560px; opacity: 0; transform: translateY(20px); transition: opacity .4s var(--ease), transform .4s var(--ease); }
+.pstep { position: absolute; inset: 0; max-width: 560px; opacity: 0; transform: translateY(18px); transition: opacity .3s var(--ease), transform .3s var(--ease); pointer-events: none; }
+.pstep.active { pointer-events: auto; }
 .pstep.active { opacity: 1; transform: none; }
 .pstep__num { font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; letter-spacing: 0.22em; color: var(--amber-light); }
 .pstep h2 { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; font-size: clamp(2rem, 5vw, 3.6rem); letter-spacing: -0.02em; line-height: 1.02; margin: 12px 0 16px; }
