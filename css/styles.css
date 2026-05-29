@@ -214,8 +214,8 @@ section { position: relative; }
 
 /* ---------- Process: self-erecting pole barn ---------- */
 .process { position: relative; background: var(--navy-deep); }
-.process__sticky { position: sticky; top: 0; height: 100svh; min-height: 600px; overflow: hidden; display: flex; align-items: flex-end; padding-bottom: 6vh; }
-.process__spacer { height: 300vh; }
+.process__sticky { position: relative; height: 100svh; min-height: 600px; overflow: hidden; display: flex; align-items: flex-end; padding-bottom: 6vh; }
+.process__spacer { display: none; }
 .process__sticky::before {
   content: ""; position: absolute; inset: 0; z-index: 1;
   background: linear-gradient(180deg, rgba(8,22,37,0.22) 0%, rgba(8,22,37,0) 30%, rgba(8,22,37,0.35) 58%, rgba(8,22,37,0.92) 100%);
@@ -236,7 +236,7 @@ section { position: relative; }
 .process__progress > i { display: block; height: 100%; width: 100%; transform: scaleX(0); transform-origin: 0 50%; background: linear-gradient(90deg, var(--blue), var(--amber)); }
 
 /* SVG part styling */
-.barn .draw { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.barn .draw { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; }
 .barn #grid line { stroke: rgba(184,208,236,0.10); stroke-width: 1; }
 .barn #blueprint path { stroke: var(--amber); stroke-width: 1.6; stroke-dasharray: 6 7; opacity: 0.55; }
 .barn #dims .draw { stroke: rgba(184,208,236,0.7); stroke-width: 1.4; }

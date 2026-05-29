@@ -112,6 +112,7 @@
   (function () {
     var section = document.getElementById("process");
     if (!section) return;
+    var panel = section.querySelector(".process__sticky");
     var steps = gsap.utils.toArray("#process .pstep");
     var dots  = gsap.utils.toArray("#process .process__dots li");
     var bar   = section.querySelector(".process__progress > i");
@@ -122,43 +123,58 @@
     }
     setActive(0);
 
-    // Initial hidden states (armed only when GSAP is live; static fallback shows the finished barn)
+    // Cache each post's real geometry so we can grow it from the ground via attributes
+    var posts = gsap.utils.toArray("#posts rect").map(function (r) {
+      return { el: r, y: parseFloat(r.getAttribute("y")), h: parseFloat(r.getAttribute("height")) };
+    });
+
+    // Initial hidden states (only armed when GSAP is live; static fallback shows the finished barn)
     gsap.set("#ground .pad, #ground .gline", { opacity: 0 });
-    gsap.set("#dims .draw", { strokeDashoffset: 1 });
+    gsap.set("#dims .draw, #blueprint path, #truss .draw, #trussFar .draw, #frame .draw", { strokeDashoffset: 1 });
     gsap.set("#dims text", { opacity: 0 });
     gsap.set("#blueprint", { opacity: 0 });
-    gsap.set("#blueprint path", { strokeDashoffset: 1 });
-    gsap.set("#posts rect", { scaleY: 0, transformOrigin: "50% 100%" });
-    gsap.set("#truss .draw, #trussFar .draw, #frame .draw", { strokeDashoffset: 1 });
-    gsap.set("#roof polygon", { opacity: 0, y: -26, transformOrigin: "50% 0%" });
+    posts.forEach(function (p) { gsap.set(p.el, { attr: { y: p.y + p.h, height: 0 } }); });
+    gsap.set("#roof polygon", { opacity: 0 });
     gsap.set("#finish", { opacity: 0 });
 
     var tl = gsap.timeline({
       defaults: { ease: "none" },
       scrollTrigger: {
-        trigger: section, start: "top top", end: "bottom bottom", scrub: 0.6,
+        trigger: panel,
+        start: "top top",
+        end: "+=2600",        // 2600px of scroll drives the full build
+        pin: true,
+        pinSpacing: true,
+        scrub: 0.7,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
         onUpdate: function (self) {
-          setActive(Math.min(3, Math.floor(self.progress * 4)));
+          // 4 steps across the first 92% of scroll; final 8% dwells on the finished barn
+          setActive(Math.min(3, Math.floor((self.progress / 0.92) * 4)));
           if (bar) bar.style.transform = "scaleX(" + self.progress + ")";
         }
       }
     });
 
-    tl.to("#ground .pad",    { opacity: 1, duration: 0.05 }, 0.02)   // 01 Design
-      .to("#ground .gline",  { opacity: 1, duration: 0.04 }, 0.05)
-      .to("#dims .draw",     { strokeDashoffset: 0, duration: 0.10 }, 0.07)
-      .to("#dims text",      { opacity: 1, duration: 0.06 }, 0.14)
-      .to("#blueprint",      { opacity: 1, duration: 0.04 }, 0.22)   // 02 Engineer
-      .to("#blueprint path", { strokeDashoffset: 0, duration: 0.18 }, 0.22)
-      .to("#dims",           { opacity: 0, duration: 0.06 }, 0.44)
-      .to("#posts rect",     { scaleY: 1, duration: 0.10, stagger: 0.015 }, 0.46) // 03 Fabricate
-      .to("#truss .draw",    { strokeDashoffset: 0, duration: 0.10, stagger: 0.01 }, 0.54)
-      .to("#trussFar .draw", { strokeDashoffset: 0, duration: 0.08 }, 0.56)
-      .to("#frame .draw",    { strokeDashoffset: 0, duration: 0.08 }, 0.63)
-      .to("#blueprint",      { opacity: 0, duration: 0.08 }, 0.66)
-      .to("#roof polygon",   { opacity: 1, y: 0, duration: 0.12, stagger: 0.04 }, 0.72) // 04 Install
-      .to("#grid",           { opacity: 0, duration: 0.10 }, 0.78)
-      .to("#finish",         { opacity: 1, duration: 0.10 }, 0.88);
+    tl.to("#ground .pad",    { opacity: 1, duration: 0.04 }, 0.02)   // 01 — Consult & Design
+      .to("#ground .gline",  { opacity: 1, duration: 0.03 }, 0.05)
+      .to("#dims .draw",     { strokeDashoffset: 0, duration: 0.10 }, 0.06)
+      .to("#dims text",      { opacity: 1, duration: 0.05 }, 0.13)
+      .to("#blueprint",      { opacity: 1, duration: 0.03 }, 0.21)   // 02 — Engineer
+      .to("#blueprint path", { strokeDashoffset: 0, duration: 0.16 }, 0.21)
+      .to("#dims",           { opacity: 0, duration: 0.05 }, 0.40)
+      .to(posts.map(function (p) { return p.el; }), {              // 03 — Fabricate & Raise
+            attr: { y: function (i) { return posts[i].y; }, height: function (i) { return posts[i].h; } },
+            duration: 0.10, stagger: 0.02
+          }, 0.44)
+      .to("#truss .draw",    { strokeDashoffset: 0, duration: 0.12, stagger: 0.015 }, 0.54)
+      .to("#trussFar .draw", { strokeDashoffset: 0, duration: 0.10 }, 0.56)
+      .to("#frame .draw",    { strokeDashoffset: 0, duration: 0.10 }, 0.64)
+      .to("#blueprint",      { opacity: 0, duration: 0.08 }, 0.68)
+      .to("#roof polygon",   { opacity: 1, duration: 0.12, stagger: 0.05 }, 0.74) // 04 — Deliver & Install
+      .to("#grid",           { opacity: 0, duration: 0.10 }, 0.80)
+      .to("#finish",         { opacity: 1, duration: 0.08 }, 0.88)
+      .to({}, { duration: 0.12 });   // dwell — hold the finished barn before release
   })();
 
   /* Horizontal gallery — pin and scroll the track sideways */
