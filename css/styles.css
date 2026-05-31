@@ -236,39 +236,47 @@ section { position: relative; }
 .process__progress { position: absolute; left: 0; bottom: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.08); z-index: 3; }
 .process__progress > i { display: block; height: 100%; width: 100%; transform: scaleX(0); transform-origin: 0 50%; background: linear-gradient(90deg, var(--blue), var(--amber)); }
 
-/* SVG part styling */
-.barn .draw { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; }
+/* ---- Barn parts (generated into #barn by app.js) ---- */
 .barn #grid line { stroke: rgba(184,208,236,0.10); stroke-width: 1; }
-.barn #blueprint path { stroke: var(--amber); stroke-width: 1.6; stroke-dasharray: 6 7; opacity: 0.55; }
-.barn #dims .draw { stroke: rgba(184,208,236,0.7); stroke-width: 1.4; }
-.barn #dims text { fill: var(--sky); font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: 0.14em; }
-.barn #posts rect { fill: rgba(184,208,236,0.92); }
-.barn #truss .draw, .barn #trussFar .draw { stroke: var(--amber-light); stroke-width: 3; }
-.barn #trussFar { opacity: 0.4; }
-.barn #frame .draw { stroke: var(--sky); stroke-width: 2; }
-.barn #roof polygon { stroke: rgba(255,255,255,0.5); stroke-width: 1.5; }
-.barn #finish .draw { stroke: #ffffff; stroke-width: 4; }
-.barn #ground .pad { fill: rgba(184,208,236,0.06); stroke: rgba(184,208,236,0.18); stroke-width: 1; }
-.barn #ground .gline { stroke: rgba(184,208,236,0.35); stroke-width: 1.5; }
-.barn #ground .shadow { fill: rgba(0,0,0,0.28); }
+.barn .draw { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; }
+.barn .pad { fill: rgba(184,208,236,0.06); stroke: rgba(184,208,236,0.20); stroke-width: 1; }
+.barn .footing { fill: rgba(184,208,236,0.30); }
+.barn .bp { fill: none; stroke: var(--amber); stroke-width: 1.6; stroke-dasharray: 1; stroke-linecap: round; stroke-linejoin: round; }
+.barn #b-blueprint { opacity: 0.7; }
+.barn .post { fill: #8c98a8; stroke: rgba(255,255,255,0.18); stroke-width: 0.5; }
+.barn .chord { stroke: var(--amber-light); stroke-width: 2.4; }
+.barn .beam { stroke: var(--sky); stroke-width: 2.4; }
+.barn .ridge { stroke: #fff; stroke-width: 2.6; }
+.barn .purlin { stroke: rgba(184,208,236,0.7); stroke-width: 1.4; }
+.barn .weld { fill: #fff; opacity: 0.85; }
+.barn .panel { stroke: rgba(255,255,255,0.35); stroke-width: 1; }
+.barn .panel.metal { fill: url(#metalGrad); }
+.barn .panel.black { fill: url(#blackRoof); }
+.barn .cap { stroke: #fff; stroke-width: 3; }
+.barn .dimline { stroke: rgba(184,208,236,0.6); stroke-width: 1.2; }
+.barn .dimtext { fill: var(--sky); font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: 0.12em; }
 
-/* Prevent first-paint flash before JS arms the build timeline */
-.has-js .process:not(.process--static) #dims,
-.has-js .process:not(.process--static) #blueprint,
-.has-js .process:not(.process--static) #posts,
-.has-js .process:not(.process--static) #truss,
-.has-js .process:not(.process--static) #trussFar,
-.has-js .process:not(.process--static) #frame,
-.has-js .process:not(.process--static) #roof,
-.has-js .process:not(.process--static) #finish,
-.has-js .process:not(.process--static) #ground .pad,
-.has-js .process:not(.process--static) #ground .gline { opacity: 0; }
+/* ---- Stage backdrop scenes ---- */
+.barn .scene { opacity: 0; }
+.barn .sc-floor { stroke: rgba(184,208,236,0.22); stroke-width: 1.5; }
+.barn .sc-fill { fill: rgba(184,208,236,0.16); stroke: rgba(184,208,236,0.32); stroke-width: 1.2; }
+.barn .sc-edge { stroke: rgba(184,208,236,0.45); stroke-width: 2; stroke-linecap: round; }
+.barn .sc-paper { fill: rgba(234,241,250,0.22); stroke: rgba(184,208,236,0.4); stroke-width: 1; }
+.barn .sc-line { stroke: rgba(184,208,236,0.5); stroke-width: 1.2; }
+.barn .sc-spark { fill: var(--amber-light); }
+.barn .sc-steel { fill: none; stroke: var(--amber-light); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.barn .sc-glass { fill: rgba(184,208,236,0.30); stroke: rgba(184,208,236,0.5); stroke-width: 1; }
+.barn .sc-wheel { fill: #11202f; stroke: rgba(184,208,236,0.55); stroke-width: 2.5; }
+.barn .sc-motion { stroke: rgba(184,208,236,0.35); stroke-width: 2; stroke-linecap: round; }
+.barn .sc-crane { stroke: var(--sky); stroke-width: 3; stroke-linecap: round; }
+.barn .sc-cable { stroke: rgba(255,255,255,0.6); stroke-width: 1.2; }
+.barn #weldArc { opacity: 0; }
+.barn .weld-spark line { stroke: #cfe6ff; stroke-width: 2; stroke-linecap: round; }
 
-/* Static fallback (no GSAP / reduced motion): show the finished barn + stacked steps */
+/* Static fallback (no GSAP / reduced motion): finished barn + stacked steps */
 .process--static .process__sticky { position: relative; height: auto; display: block; padding: 12vh 0; }
 .process--static .process__sticky::before { display: none; }
-.process--static .process__spacer { display: none; }
-.process--static .barn { position: relative; height: 50vh; margin-bottom: 28px; }
+.process--static .barn { position: relative; height: 52vh; margin-bottom: 28px; }
 .process--static .pstep-stack { min-height: 0; }
 .process--static .pstep { position: relative; inset: auto; opacity: 1; transform: none; max-width: none; margin-bottom: 24px; }
 .process--static .process__progress { display: none; }
