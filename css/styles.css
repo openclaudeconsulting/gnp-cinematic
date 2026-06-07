@@ -385,6 +385,64 @@ section { position: relative; }
   .pstep-stack { min-height: 210px; }
 }
 
+/* ============================================================
+   Mobile optimization pass — layered after the base responsive
+   rules so these win on phones/tablets.
+   ============================================================ */
+
+/* Gallery: the GSAP horizontal-scroll was never wired, so on touch
+   turn the clipped row into a natively swipeable, snap-scrolling rail
+   the user can actually pan through. */
+@media (max-width: 980px) {
+  .gallery__pin {
+    height: auto; align-items: stretch;
+    padding: 12vh 0 13vh;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .gallery__pin::-webkit-scrollbar { display: none; }
+  .gallery__track { padding: 0 20px; gap: 16px; }
+  .gallery__intro { scroll-snap-align: start; align-self: center; }
+  .shot { scroll-snap-align: center; }
+}
+
+@media (max-width: 720px) {
+  /* Tighten desktop-sized vertical rhythm on phones */
+  .build, .why { padding: 10vh 0; }
+  .cta { padding: 12vh 0; }
+  .statement { padding: 12vh 0; }
+  .section-head { margin-bottom: 30px; }
+  .feature-row { margin-top: 32px; }
+  .site-header { padding: 16px 20px; }
+  .site-header.scrolled { padding: 12px 20px; }
+
+  /* HERO — keep the headline clear of the fixed header and fit the
+     whole stack comfortably on one screen. */
+  .hero { min-height: 600px; }
+  .hero__inner { padding-bottom: 9vh; }
+  .hero h1 { font-size: clamp(2.25rem, 8.4vw, 3.1rem); line-height: 1.0; max-width: 18ch; }
+  .hero__sub { margin-top: 16px; font-size: 1rem; max-width: 40ch; }
+  .hero__cta { margin-top: 22px; gap: 10px; }
+  .hero__meta { margin-top: 24px; gap: 16px 26px; padding-top: 16px; }
+  .hero__meta div span { font-size: 1.42rem; }
+
+  /* PROCESS — give the self-erecting barn real presence instead of a
+     tiny shape adrift in empty space: pull the SVG up and scale it. */
+  .barn { transform: scale(1.42); transform-origin: 50% 38%; }
+  .process__sticky { padding-bottom: 7vh; }
+  .pstep p { font-size: 1rem; }
+  .shot { height: 54vh; }
+}
+
+@media (max-width: 420px) {
+  .hero h1 { font-size: clamp(2.0rem, 9vw, 2.5rem); }
+  .hero__meta { gap: 14px 22px; }
+  .hero__meta div span { font-size: 1.26rem; }
+  .hero__meta div small { font-size: 0.62rem; letter-spacing: 0.12em; }
+}
+
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }

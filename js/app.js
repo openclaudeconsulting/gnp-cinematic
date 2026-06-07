@@ -72,6 +72,37 @@
     reveals.forEach(function (el) { el.classList.add("in"); });
   }
 
+  /* ---- Animated stat counters (.num[data-count]) — count up on reveal ---- */
+  (function () {
+    var nums = document.querySelectorAll(".num[data-count]");
+    if (!nums.length) return;
+    function run(el) {
+      var target = parseFloat(el.getAttribute("data-count")) || 0;
+      var suffix = el.getAttribute("data-suffix") || "";
+      var prefix = el.getAttribute("data-prefix") || "";
+      if (reduceMotion) { el.textContent = prefix + target + suffix; return; }
+      var dur = 1400, t0 = null;
+      function tick(t) {
+        if (t0 === null) t0 = t;
+        var p = Math.min((t - t0) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3); /* easeOutCubic */
+        el.textContent = prefix + Math.round(target * eased) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+    if ("IntersectionObserver" in window) {
+      var io2 = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { run(en.target); io2.unobserve(en.target); }
+        });
+      }, { threshold: 0.4 });
+      nums.forEach(function (el) { io2.observe(el); });
+    } else {
+      nums.forEach(run);
+    }
+  })();
+
   /* ============================================================
      Build the accurate 40×60 pole barn into <g id="barn">.
      6 posts per long wall = 5 bays; 6 steel trusses; black roof.
