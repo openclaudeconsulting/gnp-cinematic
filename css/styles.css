@@ -107,6 +107,8 @@ section { position: relative; }
   border-bottom: 1px solid var(--line);
 }
 .brand { display: flex; align-items: center; gap: 12px; }
+.brand-emblem { height: 40px; width: auto; display: block; }
+.site-header.scrolled .brand-emblem { height: 34px; transition: height .4s var(--ease); }
 .brand-mark {
   width: 44px; height: 44px; border-radius: 11px;
   display: grid; place-items: center;
@@ -417,6 +419,9 @@ section { position: relative; }
   .feature-row { margin-top: 32px; }
   .site-header { padding: 16px 20px; }
   .site-header.scrolled { padding: 12px 20px; }
+  .brand-emblem { height: 34px; }
+  .brand-name { font-size: 0.92rem; }
+  .brand-tag { font-size: 0.58rem; letter-spacing: 0.22em; }
 
   /* HERO — keep the headline clear of the fixed header and fit the
      whole stack comfortably on one screen. */
