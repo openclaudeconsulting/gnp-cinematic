@@ -179,7 +179,7 @@ section { position: relative; }
 @keyframes cue { 0% { transform: scaleY(0); transform-origin: top; } 45% { transform: scaleY(1); transform-origin: top; } 55% { transform: scaleY(1); transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
 
 /* ---------- Statement (pinned editorial) ---------- */
-.statement { min-height: 100svh; display: grid; place-items: center; padding: 14vh 0; background: var(--navy-deep); }
+.statement { min-height: 72vh; display: grid; place-items: center; padding: 9vh 0; background: var(--navy-deep); }
 .statement .container { text-align: center; }
 .statement p {
   font-family: var(--font-display); font-weight: 800; text-transform: uppercase;
@@ -215,7 +215,10 @@ section { position: relative; }
 .step__grid { display: grid; grid-template-columns: auto 1fr; gap: 36px; align-items: center; }
 
 /* ---------- Process: self-erecting pole barn ---------- */
-.process { position: relative; background: var(--navy-deep); }
+/* Pull the process up under the statement's empty lower half (both are the
+   same navy, so it's seamless) — kills the dead screen that sat between the
+   centered statement line and the bottom-anchored "How We Build" copy. */
+.process { position: relative; background: var(--navy-deep); margin-top: -20vh; }
 .process__sticky { position: relative; height: 100svh; min-height: 600px; overflow: hidden; display: flex; align-items: flex-end; padding-bottom: 6vh; }
 .process__spacer { display: none; }
 .process__sticky::before {
