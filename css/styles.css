@@ -129,7 +129,7 @@ section { position: relative; }
 .btn {
   display: inline-flex; align-items: center; gap: 9px;
   font-family: var(--font-display); font-weight: 700; font-size: 0.78rem;
-  text-transform: uppercase; letter-spacing: 0.08em;
+  text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap;
   padding: 13px 24px; border-radius: 100px; border: 0; cursor: pointer;
   transition: transform .3s var(--ease), box-shadow .3s var(--ease), background .3s var(--ease);
 }
@@ -275,6 +275,12 @@ section { position: relative; }
 .barn #weldArc { opacity: 0; }
 .barn .weld-spark line { stroke: #cfe6ff; stroke-width: 2; stroke-linecap: round; }
 
+/* ---- Tower crane (erects, lifts the trusses, then leaves) ---- */
+.barn .crane-beam { fill: none; stroke: var(--sky); stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; }
+.barn .crane-stay { fill: none; stroke: rgba(184,208,236,0.55); stroke-width: 1.6; stroke-linecap: round; stroke-dasharray: 1; }
+.barn .crane-trolley { fill: var(--sky); }
+.barn .crane-cable { stroke: rgba(255,255,255,0.62); stroke-width: 1.5; stroke-linecap: round; }
+
 /* Static fallback (no GSAP / reduced motion): finished barn + stacked steps */
 .process--static .process__sticky { position: relative; height: auto; display: block; padding: 12vh 0; }
 .process--static .process__sticky::before { display: none; }
@@ -401,6 +407,7 @@ section { position: relative; }
     padding: 12vh 0 13vh;
     overflow-x: auto; overflow-y: hidden;
     scroll-snap-type: x mandatory;
+    scroll-padding-left: 20px; /* keep snapped items off the screen edge */
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
@@ -446,6 +453,24 @@ section { position: relative; }
   .hero__meta { gap: 14px 22px; }
   .hero__meta div span { font-size: 1.26rem; }
   .hero__meta div small { font-size: 0.62rem; letter-spacing: 0.12em; }
+}
+
+/* Header + hero chrome from tablet down: this is a single-page scroll
+   site with no drawer menu, so hide the inline nav links and keep the
+   Quote button on ONE tidy line (it was wrapping into an oversized amber
+   blob). Also drop the decorative scroll cue, which collided with the
+   full-width hero stat row on phones/tablets. */
+@media (max-width: 900px) {
+  .nav .link { display: none; }
+  .site-header .btn-amber { padding: 10px 16px; font-size: 0.72rem; letter-spacing: 0.05em; }
+  .scroll-cue { display: none; }
+}
+/* Phones: the full word-mark lockup can't share a phone-width row with
+   the CTA without wrapping (they met with zero gap at ~360px), so drop
+   the header text and let the emblem — which reads "GNP" — carry the
+   brand. The footer keeps its full lockup. */
+@media (max-width: 520px) {
+  .site-header .brand-text { display: none; }
 }
 
 /* ---------- Reduced motion ---------- */

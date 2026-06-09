@@ -180,13 +180,15 @@
     function roofY(x) { return (x <= ridgeX) ? (H + (Hr-H)*(x/ridgeX)) : (H + (Hr-H)*((40-x)/ridgeX)); }
     var purlins = [10,30].map(function (x) { return ln(gPurl, P(x,roofY(x),0), P(x,roofY(x),60), "draw purlin"); });
 
-    // 6 steel trusses (far->near) + weld points
-    var trussLines = [];
+    // 6 steel trusses (far->near) + weld points. Each truss is its own group
+    // so the crane can fly it in as a rigid piece (translate), back-to-front.
+    var trussLines = [], trussGroups = [];
     zs.slice().reverse().forEach(function (z) {
       var eL = P(0,H,z), eR = P(40,H,z), ap = P(ridgeX,Hr,z), mid = P(ridgeX,H,z), qL = P(10,H,z), qR = P(30,H,z);
       var t = add(gTruss, "g", { "class": "truss" });
-      [[eL,eR],[eL,ap],[ap,eR],[mid,ap],[qL,ap],[qR,ap]].forEach(function (seg) { trussLines.push(ln(t, seg[0], seg[1], "draw chord")); });
+      [[eL,eR],[eL,ap],[ap,eR],[mid,ap],[qL,ap],[qR,ap]].forEach(function (seg) { trussLines.push(ln(t, seg[0], seg[1], "chord")); });
       [eL, eR, ap].forEach(function (j) { add(gWeld, "circle", { cx: j[0].toFixed(1), cy: j[1].toFixed(1), r: 3.2, "class": "weld" }); });
+      trussGroups.push({ el: t, apex: ap });   // apex = where the crane hook grabs it
     });
 
     // roof skins — metal then painted black (two slopes each)
@@ -205,10 +207,29 @@
       var t2 = add(gDim, "text", { x: ((c[0]+d[0])/2+30).toFixed(1), y: ((c[1]+d[1])/2+4).toFixed(1), "text-anchor": "middle", "class": "dimtext" }); t2.textContent = "60′ · 5 BAYS";
     })();
 
+    // ---- Tower crane: erects in fabrication, sets every truss, then leaves ----
+    var gCrane = add(barn, "g", { id: "b-crane" });   // appended last -> paints on top
+    var JIBY = 88, MASTX = 150, MASTTOP = 40, MASTBASE = 540, JIBEND = 902;
+    var parkX = trussGroups[0].apex[0];               // start parked over the first (back) truss
+    function cl(a, b, cls) { return ln(gCrane, a, b, cls); }
+    var craneMast = cl([MASTX, MASTBASE], [MASTX, MASTTOP], "crane-beam draw");
+    var craneCJib = cl([MASTX, JIBY], [70, JIBY], "crane-beam draw");      // counter-jib
+    var craneJib  = cl([MASTX, JIBY], [JIBEND, JIBY], "crane-beam draw");  // working jib
+    var craneFore = cl([MASTX, MASTTOP], [560, JIBY], "crane-stay draw");  // fore pendant
+    var craneBack = cl([MASTX, MASTTOP], [70, JIBY], "crane-stay draw");   // back pendant
+    var craneCwt  = add(gCrane, "rect", { x: 48, y: 80, width: 26, height: 18, rx: 2, "class": "crane-trolley" }); // counterweight
+    var craneTrolley = add(gCrane, "rect", { x: (parkX - 13).toFixed(1), y: (JIBY - 6).toFixed(1), width: 26, height: 12, rx: 2, "class": "crane-trolley" });
+    var craneCable = add(gCrane, "line", { x1: parkX, y1: JIBY, x2: parkX, y2: JIBY + 30, "class": "crane-cable", pathLength: 1 });
+
     return {
       padPoly: gPad.querySelector(".pad"), footings: footings,
       bp: bp, postData: postData, beams: beams, purlins: purlins,
-      trussLines: trussLines, gWeld: gWeld, metal: metal, black: black, cap: cap, gDim: gDim
+      trussLines: trussLines, trussGroups: trussGroups, gWeld: gWeld, metal: metal, black: black, cap: cap, gDim: gDim,
+      crane: {
+        g: gCrane, parkX: parkX, jibY: JIBY,
+        beams: [craneMast, craneCJib, craneJib], stays: [craneFore, craneBack],
+        cwt: craneCwt, trolley: craneTrolley, cable: craneCable
+      }
     };
   }
 
@@ -223,6 +244,8 @@
       refs0.metal.forEach(function (p) { p.style.opacity = 0; });
       if (refs0.gDim) refs0.gDim.style.opacity = 0;
       refs0.bp.forEach(function (b) { b.style.opacity = 0; });
+      refs0.trussGroups.forEach(function (t) { t.el.style.opacity = 1; }); // trusses already set
+      if (refs0.crane) refs0.crane.g.style.opacity = 0;                    // finished state has no crane
     }
     return;
   }
@@ -289,13 +312,17 @@
     gsap.set(refs.padPoly, { opacity: 0 });
     gsap.set(refs.footings, { opacity: 0 });
     gsap.set(refs.bp, { strokeDashoffset: 1 });
-    gsap.set(refs.trussLines.concat(refs.beams).concat(refs.purlins).concat([refs.cap]), { strokeDashoffset: 1 });
+    gsap.set(refs.beams.concat(refs.purlins).concat([refs.cap]), { strokeDashoffset: 1 });
+    gsap.set(refs.trussLines, { strokeDashoffset: 0 });                 // trusses are flown in, not drawn
+    refs.trussGroups.forEach(function (t) { gsap.set(t.el, { opacity: 0, y: 0 }); });
     refs.postData.forEach(function (p) { gsap.set(p.el, { attr: { y: p.y + p.h, height: 0 } }); });
     gsap.set(refs.metal, { opacity: 0 });
     gsap.set(refs.black, { opacity: 0 });
     gsap.set(refs.gWeld, { opacity: 0 });
     gsap.set(refs.gDim, { opacity: 0 });
-    gsap.set(["#sc-consult", "#sc-fab", "#sc-deliver", "#sc-install"], { opacity: 0 });
+    gsap.set(refs.crane.beams.concat(refs.crane.stays), { strokeDashoffset: 1 });   // crane un-erected
+    gsap.set([refs.crane.cwt, refs.crane.trolley, refs.crane.cable], { opacity: 0 });
+    gsap.set(["#sc-consult", "#sc-fab", "#sc-deliver"], { opacity: 0 });
 
     var tl = gsap.timeline({
       defaults: { ease: "none" },
@@ -309,38 +336,82 @@
       }
     });
 
-    // ---- STAGE 1 — CONSULTATION [0.00–0.25] ----
+    var JIBY = refs.crane.jibY, LIFT = 86;
+
+    // ---- STAGE 1 — CONSULTATION [0.00–0.25]: site, footprint, blueprint ----
     tl.to("#sc-consult", { opacity: 0.85, duration: 0.04 }, 0.01)
       .to(refs.padPoly,  { opacity: 1, duration: 0.04 }, 0.03)
       .to(refs.footings, { opacity: 1, duration: 0.05, stagger: 0.004 }, 0.05)
       .to(refs.gDim,     { opacity: 1, duration: 0.05 }, 0.07)
       .to(refs.bp,       { strokeDashoffset: 0, duration: 0.13, stagger: 0.02 }, 0.07)
 
-    // ---- STAGE 2 — FABRICATION [0.25–0.50] ----
+    // ---- STAGE 2 — FABRICATION [0.25–0.50]: posts rise + the crane is erected ----
       .to("#sc-consult", { opacity: 0, duration: 0.04 }, 0.24)
       .to(refs.gDim,     { opacity: 0, duration: 0.04 }, 0.24)
-      .to("#sc-fab",     { opacity: 0.9, duration: 0.04 }, 0.27)
-      .to(postEls, { attr: { y: function (i) { return refs.postData[i].y; }, height: function (i) { return refs.postData[i].h; } }, duration: 0.09, stagger: 0.012 }, 0.28)
-      .to(refs.gWeld,    { opacity: 1, duration: 0.03 }, 0.34)
-      .to(refs.trussLines, { strokeDashoffset: 0, duration: 0.12, stagger: 0.006 }, 0.34)
+      .to("#sc-fab",     { opacity: 0.9, duration: 0.04 }, 0.26)
+      .to(postEls, { attr: { y: function (i) { return refs.postData[i].y; }, height: function (i) { return refs.postData[i].h; } }, duration: 0.08, stagger: 0.008 }, 0.27)
+      .to(refs.crane.beams, { strokeDashoffset: 0, duration: 0.05, stagger: 0.028 }, 0.31)   // mast, jib raise
+      .to(refs.crane.stays, { strokeDashoffset: 0, duration: 0.04, stagger: 0.015 }, 0.41)   // pendants
+      .to([refs.crane.cwt, refs.crane.trolley, refs.crane.cable], { opacity: 1, duration: 0.03 }, 0.45)
+      .to([refs.beams[0], refs.beams[1]], { strokeDashoffset: 0, duration: 0.05, stagger: 0.012 }, 0.46)  // eave beams cap the posts
 
-    // ---- STAGE 3 — DELIVERY [0.50–0.75] ----
-      .to(refs.gWeld,    { opacity: 0, duration: 0.04 }, 0.48)
+    // ---- STAGE 3 — DELIVERY/RAISING [0.50–0.75]: the crane sets every truss ----
       .to("#sc-fab",     { opacity: 0, duration: 0.04 }, 0.49)
-      .to("#sc-deliver", { opacity: 0.9, duration: 0.04 }, 0.52)
-      .to(refs.beams,    { strokeDashoffset: 0, duration: 0.10, stagger: 0.02 }, 0.54)
-      .to(refs.purlins,  { strokeDashoffset: 0, duration: 0.10, stagger: 0.02 }, 0.62)
+      .to("#sc-deliver", { opacity: 0.8, duration: 0.04 }, 0.51)
+      .to(refs.beams[2], { strokeDashoffset: 0, duration: 0.04 }, 0.72)    // ridge beam, once trusses are set
+      .to(refs.gWeld,    { opacity: 1, duration: 0.04 }, 0.72)
+      .to(refs.purlins,  { strokeDashoffset: 0, duration: 0.045, stagger: 0.015 }, 0.725)
 
-    // ---- STAGE 4 — INSTALLATION [0.75–1.00] ----
-      .to("#sc-deliver", { opacity: 0, duration: 0.04 }, 0.73)
-      .to("#sc-install", { opacity: 0.9, duration: 0.04 }, 0.76)
-      .to(refs.bp,       { opacity: 0, duration: 0.05 }, 0.74)
-      .to(refs.metal,    { opacity: 1, duration: 0.08, stagger: 0.04 }, 0.78)
-      .to("#grid",       { opacity: 0, duration: 0.08 }, 0.82)
-      .to(refs.black,    { opacity: 1, duration: 0.09, stagger: 0.05 }, 0.86)
-      .to(refs.cap,      { strokeDashoffset: 0, duration: 0.05 }, 0.92)
-      .to("#sc-install", { opacity: 0.35, duration: 0.05 }, 0.95)
-      .to({}, { duration: 0.03 }, 0.97);
+    // ---- STAGE 4 — INSTALLATION [0.75–1.00]: crane leaves, roof goes on ----
+      .to("#sc-deliver", { opacity: 0, duration: 0.04 }, 0.75)
+      .to(refs.crane.g,  { opacity: 0, duration: 0.06 }, 0.77)             // crane leaves — no crane at the finish
+      .to(refs.bp,       { opacity: 0, duration: 0.05 }, 0.77)
+      .to(refs.metal,    { opacity: 1, duration: 0.08, stagger: 0.04 }, 0.80)
+      .to("#grid",       { opacity: 0, duration: 0.08 }, 0.84)
+      .to(refs.black,    { opacity: 1, duration: 0.09, stagger: 0.05 }, 0.88)
+      .to(refs.cap,      { strokeDashoffset: 0, duration: 0.05 }, 0.94)
+      .to({}, { duration: 0.02 }, 0.99);
+
+    // ---- Crane truss-lift: fly each truss in back-to-front; hook ends empty ----
+    var cable = refs.crane.cable, trolley = refs.crane.trolley;
+    var T0 = 0.515, STEP = 0.0335, DUR = 0.018;
+    refs.trussGroups.forEach(function (t, i) {
+      var ax = t.apex[0], ay = t.apex[1], Ti = T0 + i * STEP;
+      tl.to(trolley, { attr: { x: (ax - 13) }, duration: 0.008 }, Ti)             // trolley slides to this bay
+        .to(cable,   { attr: { x1: ax, x2: ax }, duration: 0.008 }, Ti)
+        .set(t.el,   { opacity: 1, y: -LIFT }, Ti + 0.009)                        // truss appears at the hook
+        .set(cable,  { attr: { y1: JIBY, y2: (ay - LIFT) } }, Ti + 0.009)
+        .to(t.el,    { y: 0, duration: DUR, ease: "power1.in" }, Ti + 0.010)       // lower onto the posts
+        .to(cable,   { attr: { y2: ay }, duration: DUR, ease: "power1.in" }, Ti + 0.010)
+        .to(cable,   { attr: { y2: (JIBY + 20) }, duration: 0.006 }, Ti + 0.010 + DUR); // release, hook back up empty
+    });
+  })();
+
+  /* Gallery — desktop horizontal scroll.
+     Pin the gallery and translate the track left as the user scrolls so
+     every project photo pans across. On <=980px the CSS turns the same
+     markup into a native swipe rail, so only wire the GSAP version on
+     desktop; gsap.matchMedia auto-reverts it (clearing the transform) if
+     the viewport crosses back under the breakpoint. */
+  (function () {
+    var section = document.getElementById("gallery");
+    var track = document.getElementById("galleryTrack");
+    if (!section || !track) return;
+    var mm = gsap.matchMedia();
+    mm.add("(min-width: 981px)", function () {
+      var amount = function () { return Math.max(0, track.scrollWidth - window.innerWidth); };
+      gsap.to(track, {
+        x: function () { return -amount(); },
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: function () { return "+=" + amount(); },
+          pin: true, pinSpacing: true, scrub: 0.7,
+          anticipatePin: 1, invalidateOnRefresh: true
+        }
+      });
+    });
   })();
 
   /* Safety: recalc on resize */
