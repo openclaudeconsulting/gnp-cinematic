@@ -363,6 +363,11 @@ section { position: relative; }
 .foot-grid a:hover { color: #fff; }
 .foot-blurb { color: rgba(255,255,255,0.7); max-width: 38ch; margin-top: 14px; font-size: 0.95rem; }
 .foot-bottom { margin-top: 48px; padding-top: 22px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: rgba(255,255,255,0.55); font-size: 0.82rem; }
+/* Discreet staff entry point to the gated /portal/ (employees only) */
+.foot-dot { margin: 0 4px; opacity: 0.5; }
+.foot-staff { color: inherit; opacity: 0.72; transition: opacity .25s var(--ease), color .25s var(--ease); }
+.foot-staff:hover { opacity: 1; color: var(--amber-light); }
+.foot-staff:focus-visible { outline: 2px solid var(--amber-light); outline-offset: 2px; border-radius: 3px; opacity: 1; }
 
 /* ---------- Reveal animation base (JS adds .in) ---------- */
 .reveal { opacity: 0; transform: translateY(38px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
