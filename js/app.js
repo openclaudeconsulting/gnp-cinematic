@@ -268,10 +268,10 @@
   var words = gsap.utils.toArray("#statementText .word");
   if (words.length) {
     ScrollTrigger.create({
-      // Finish lighting the words by the time the line is centered in view —
-      // not once the section's bottom is leaving (which lit the last word
-      // only after it had scrolled to the very top).
-      trigger: "#statement", start: "top 80%", end: "center 60%", scrub: true,
+      // Light the words as the line scrolls up to the middle of the screen,
+      // spread over a long-enough scroll that it's an unhurried reveal (the
+      // fixed +=N controls the pace; it finishes ~when the line is centered).
+      trigger: "#statement", start: "top 90%", end: "+=820", scrub: true,
       onUpdate: function (self) {
         var lit = Math.round(self.progress * words.length);
         words.forEach(function (w, i) { w.classList.toggle("lit", i < lit); });
