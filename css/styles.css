@@ -334,7 +334,7 @@ section { position: relative; }
 .why .section-head p { color: rgba(255,255,255,0.78); }
 .why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 18px; }
 .stat { border: 1px solid var(--line); border-radius: 16px; padding: 30px 26px; background: rgba(255,255,255,0.03); }
-.stat .num { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.4rem, 4vw, 3.4rem); letter-spacing: -0.02em; line-height: 1; background: linear-gradient(120deg, #fff, var(--sky)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.stat .num { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.4rem, 4vw, 3.4rem); letter-spacing: -0.02em; line-height: 1; background: linear-gradient(120deg, var(--amber-light), var(--amber) 60%, var(--amber-dark)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .stat .lbl { margin-top: 12px; font-size: 0.9rem; color: rgba(255,255,255,0.78); }
 
 .feature-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 56px; }
