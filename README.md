@@ -44,7 +44,7 @@ gallery → Why GNP + animated stats → CTA → Footer.
 
 ## Brand & lead routing rules (honored)
 
-- Contact info is always the owner's: **(352) 646-9090** /
+- Contact info is always the owner's: **(352) 440-0905** /
   **GNPSteelTrusses@gmail.com**. No subcontractor numbers.
 - Services = pole-barn structures only (pole barns, barndominiums, stables,
   workshops, garages, custom). No roofing/fencing/porches/decks.

@@ -1,0 +1,234 @@
+{
+  "open-pole-barns": [
+    {
+      "file": "01.jpg",
+      "caption": "Open pole barn on green lawn",
+      "q": 4
+    },
+    {
+      "file": "02.jpg",
+      "caption": "Large open RV cover by garage",
+      "q": 4
+    },
+    {
+      "file": "03.jpg",
+      "caption": "Open pole barn in pine clearing",
+      "q": 4
+    },
+    {
+      "file": "04.jpg",
+      "caption": "Open pole barn with white roof",
+      "q": 4
+    },
+    {
+      "file": "05.jpg",
+      "caption": "Large open pole barn pavilion",
+      "q": 4
+    },
+    {
+      "file": "06.jpg",
+      "caption": "Open carport beside home",
+      "q": 4
+    },
+    {
+      "file": "07.jpg",
+      "caption": "Open pole barn with trusses",
+      "q": 4
+    },
+    {
+      "file": "08.jpg",
+      "caption": "Open carport attached to garage",
+      "q": 4
+    },
+    {
+      "file": "09.jpg",
+      "caption": "Tan open pole barn shelter",
+      "q": 4
+    },
+    {
+      "file": "10.jpg",
+      "caption": "Open pole barn with enclosed bay",
+      "q": 4
+    },
+    {
+      "file": "11.jpg",
+      "caption": "Tan open barn with office",
+      "q": 4
+    },
+    {
+      "file": "12.jpg",
+      "caption": "White-roof open pole barn",
+      "q": 4
+    }
+  ],
+  "enclosed-pole-barns": [
+    {
+      "file": "01.jpg",
+      "caption": "Gray steel barn with windows",
+      "q": 4
+    },
+    {
+      "file": "02.jpg",
+      "caption": "Gray enclosed pole barn gable",
+      "q": 4
+    },
+    {
+      "file": "03.jpg",
+      "caption": "Charcoal gabled metal barn",
+      "q": 4
+    },
+    {
+      "file": "04.jpg",
+      "caption": "Large tan enclosed workshop",
+      "q": 3
+    },
+    {
+      "file": "05.jpg",
+      "caption": "Tan enclosed barn with red trim",
+      "q": 3
+    },
+    {
+      "file": "06.jpg",
+      "caption": "Black gable-end barn under construction",
+      "q": 3
+    },
+    {
+      "file": "07.jpg",
+      "caption": "Black barn with wood-post porch",
+      "q": 3
+    },
+    {
+      "file": "08.jpg",
+      "caption": "Black barn with open lean-to",
+      "q": 3
+    },
+    {
+      "file": "09.jpg",
+      "caption": "Black barn with side lean-to",
+      "q": 3
+    },
+    {
+      "file": "10.jpg",
+      "caption": "Gray walled barn, two-tone wainscot",
+      "q": 3
+    },
+    {
+      "file": "11.jpg",
+      "caption": "Tan walled workshop on dirt lot",
+      "q": 3
+    },
+    {
+      "file": "12.jpg",
+      "caption": "Black gabled barn with windows",
+      "q": 3
+    }
+  ],
+  "barndominiums": [
+    {
+      "file": "01.jpg",
+      "caption": "Tan barndo with red trim",
+      "q": 4
+    },
+    {
+      "file": "02.jpg",
+      "caption": "Green-roof barndo with wrap porch",
+      "q": 4
+    },
+    {
+      "file": "03.jpg",
+      "caption": "Aerial green-roof barndominium porch",
+      "q": 4
+    },
+    {
+      "file": "04.jpg",
+      "caption": "Black barndo with porch posts",
+      "q": 3
+    }
+  ],
+  "stables": [
+    {
+      "file": "01.jpg",
+      "caption": "Open-air livestock shelter",
+      "standin": true
+    },
+    {
+      "file": "02.jpg",
+      "caption": "Run-in stable barn",
+      "standin": true
+    },
+    {
+      "file": "03.jpg",
+      "caption": "Open shelter for stock",
+      "standin": true
+    },
+    {
+      "file": "04.jpg",
+      "caption": "Covered stable & paddock",
+      "standin": true
+    },
+    {
+      "file": "05.jpg",
+      "caption": "Open-sided stock barn",
+      "standin": true
+    },
+    {
+      "file": "06.jpg",
+      "caption": "Loafing-shed shelter",
+      "standin": true
+    }
+  ],
+  "garages": [
+    {
+      "file": "01.jpg",
+      "caption": "Tan and blue garage, two doors",
+      "q": 5
+    },
+    {
+      "file": "02.jpg",
+      "caption": "Red barn with white garage door",
+      "q": 4
+    },
+    {
+      "file": "03.jpg",
+      "caption": "Gray two-bay barn with loft",
+      "q": 4
+    },
+    {
+      "file": "04.jpg",
+      "caption": "Charcoal two-bay garage with pine",
+      "q": 4
+    },
+    {
+      "file": "05.jpg",
+      "caption": "Black metal garage with roll-ups",
+      "q": 4
+    },
+    {
+      "file": "06.jpg",
+      "caption": "Enclosed garage with covered carport",
+      "q": 4
+    },
+    {
+      "file": "07.jpg",
+      "caption": "Tan red-trim garage with bay",
+      "q": 3
+    },
+    {
+      "file": "08.jpg",
+      "caption": "Open-bay garage housing classic cars",
+      "q": 3
+    }
+  ],
+  "custom-builds": [
+    {
+      "file": "01.jpg",
+      "caption": "Gray barn with wraparound lean-to",
+      "q": 5
+    },
+    {
+      "file": "02.jpg",
+      "caption": "Large open arena with lean-tos",
+      "q": 4
+    }
+  ]
+}
